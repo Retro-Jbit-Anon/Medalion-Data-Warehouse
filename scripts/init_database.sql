@@ -68,7 +68,7 @@ GO
 
 -- Insert this script into the version tracker
 INSERT INTO dbo.SchemaVersion (ScriptName)
-VALUES ('001_create_database_and_schemas.sql');
+VALUES ('init_database.sql');
 GO
 
 -- Output success message
