@@ -1,5 +1,5 @@
 -- =============================================
--- Procedure: bronze.load_bronze
+-- Procedure: Bronze.load_Bronze
 -- Author: Retro Jbit
 -- Date: July 12, 2025
 -- Purpose: Load raw CSV data into Bronze layer tables using BULK INSERT
@@ -7,7 +7,7 @@
 --        Designed for development environments. Replace file paths accordingly.
 -- =============================================
 
-CREATE OR ALTER PROCEDURE bronze.load_bronze
+CREATE OR ALTER PROCEDURE Bronze.load_Bronze
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -31,14 +31,14 @@ BEGIN
         PRINT '------------------------------------------------';
 
         -- ---------------------------
-        -- bronze.crm_cust_info
+        -- Bronze.crm_cust_info
         -- ---------------------------
         SET @start_time = GETDATE();
         PRINT '🟡 [crm_cust_info] Truncating table...';
-        TRUNCATE TABLE bronze.crm_cust_info;
+        TRUNCATE TABLE Bronze.crm_cust_info;
 
         PRINT '🟢 [crm_cust_info] Inserting data...';
-        BULK INSERT bronze.crm_cust_info
+        BULK INSERT Bronze.crm_cust_info
         FROM 'C:\sql\dwh_project\datasets\source_crm\cust_info.csv'
         WITH (
             FIRSTROW = 2,
@@ -50,14 +50,14 @@ BEGIN
         PRINT '----------------------------------------';
 
         -- ---------------------------
-        -- bronze.crm_prd_info
+        -- Bronze.crm_prd_info
         -- ---------------------------
         SET @start_time = GETDATE();
         PRINT '🟡 [crm_prd_info] Truncating table...';
-        TRUNCATE TABLE bronze.crm_prd_info;
+        TRUNCATE TABLE Bronze.crm_prd_info;
 
         PRINT '🟢 [crm_prd_info] Inserting data...';
-        BULK INSERT bronze.crm_prd_info
+        BULK INSERT Bronze.crm_prd_info
         FROM 'C:\sql\dwh_project\datasets\source_crm\prd_info.csv'
         WITH (
             FIRSTROW = 2,
@@ -69,14 +69,14 @@ BEGIN
         PRINT '----------------------------------------';
 
         -- ---------------------------
-        -- bronze.crm_sales_details
+        -- Bronze.crm_sales_details
         -- ---------------------------
         SET @start_time = GETDATE();
         PRINT '🟡 [crm_sales_details] Truncating table...';
-        TRUNCATE TABLE bronze.crm_sales_details;
+        TRUNCATE TABLE Bronze.crm_sales_details;
 
         PRINT '🟢 [crm_sales_details] Inserting data...';
-        BULK INSERT bronze.crm_sales_details
+        BULK INSERT Bronze.crm_sales_details
         FROM 'C:\sql\dwh_project\datasets\source_crm\sales_details.csv'
         WITH (
             FIRSTROW = 2,
@@ -92,14 +92,14 @@ BEGIN
         PRINT '------------------------------------------------';
 
         -- ---------------------------
-        -- bronze.erp_loc_a101
+        -- Bronze.erp_loc_a101
         -- ---------------------------
         SET @start_time = GETDATE();
         PRINT '🟡 [erp_loc_a101] Truncating table...';
-        TRUNCATE TABLE bronze.erp_loc_a101;
+        TRUNCATE TABLE Bronze.erp_loc_a101;
 
         PRINT '🟢 [erp_loc_a101] Inserting data...';
-        BULK INSERT bronze.erp_loc_a101
+        BULK INSERT Bronze.erp_loc_a101
         FROM 'C:\sql\dwh_project\datasets\source_erp\loc_a101.csv'
         WITH (
             FIRSTROW = 2,
@@ -111,14 +111,14 @@ BEGIN
         PRINT '----------------------------------------';
 
         -- ---------------------------
-        -- bronze.erp_cust_az12
+        -- Bronze.erp_cust_az12
         -- ---------------------------
         SET @start_time = GETDATE();
         PRINT '🟡 [erp_cust_az12] Truncating table...';
-        TRUNCATE TABLE bronze.erp_cust_az12;
+        TRUNCATE TABLE Bronze.erp_cust_az12;
 
         PRINT '🟢 [erp_cust_az12] Inserting data...';
-        BULK INSERT bronze.erp_cust_az12
+        BULK INSERT Bronze.erp_cust_az12
         FROM 'C:\sql\dwh_project\datasets\source_erp\cust_az12.csv'
         WITH (
             FIRSTROW = 2,
@@ -130,14 +130,14 @@ BEGIN
         PRINT '----------------------------------------';
 
         -- ---------------------------
-        -- bronze.erp_px_cat_g1v2
+        -- Bronze.erp_px_cat_g1v2
         -- ---------------------------
         SET @start_time = GETDATE();
         PRINT '🟡 [erp_px_cat_g1v2] Truncating table...';
-        TRUNCATE TABLE bronze.erp_px_cat_g1v2;
+        TRUNCATE TABLE Bronze.erp_px_cat_g1v2;
 
         PRINT '🟢 [erp_px_cat_g1v2] Inserting data...';
-        BULK INSERT bronze.erp_px_cat_g1v2
+        BULK INSERT Bronze.erp_px_cat_g1v2
         FROM 'C:\sql\dwh_project\datasets\source_erp\px_cat_g1v2.csv'
         WITH (
             FIRSTROW = 2,
@@ -159,7 +159,7 @@ BEGIN
         IF OBJECT_ID('dbo.SchemaVersion', 'U') IS NOT NULL
         BEGIN
             INSERT INTO dbo.SchemaVersion (ScriptName)
-            VALUES ('bronze.load_bronze');
+            VALUES ('Bronze.load_Bronze');
         END
 
     END TRY
@@ -178,7 +178,7 @@ BEGIN
             @ErrorState = ERROR_STATE(),
             @ErrorLine = ERROR_LINE();
 
-        PRINT '🛑 ERROR OCCURRED DURING BRONZE LAYER LOAD';
+        PRINT '🛑 ERROR OCCURRED DURING Bronze LAYER LOAD';
         PRINT '📍 Error Number: ' + CAST(@ErrorNumber AS VARCHAR);
         PRINT '📍 Error Line: ' + CAST(@ErrorLine AS VARCHAR);
         PRINT '💬 Message: ' + @ErrorMessage;
