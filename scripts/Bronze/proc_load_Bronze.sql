@@ -1,6 +1,6 @@
 -- =============================================
 -- Procedure: bronze.load_bronze
--- Author: Your Name
+-- Author: Retro Jbit
 -- Date: July 12, 2025
 -- Purpose: Load raw CSV data into Bronze layer tables using BULK INSERT
 -- Notes: Ensure source CSV paths are accessible by SQL Server.
