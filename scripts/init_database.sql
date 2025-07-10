@@ -1,12 +1,16 @@
 -- =============================================
 -- File: init_database.sql
--- Author: Jidaar
+-- Author: Retro Jbit
 -- Date: July 10, 2025
 -- Purpose: Creates the DataWareHouse database and core layer schemas:
 --          Bronze (raw), Silver (cleaned), Gold (curated)
 -- Version: 1.0
 -- =============================================
-
+/*
+=============================================================
+Create Database and Schemas
+=============================================================
+*/
 -- Ensure we're in master context
 USE master;
 GO
@@ -55,7 +59,7 @@ EXEC sp_addextendedproperty
     @level0type = N'Schema', @level0name = 'Gold';
 GO
 
--- Optional: Create a SchemaVersion table for migration tracking
+-- Create a SchemaVersion table for migration tracking
 IF OBJECT_ID('dbo.SchemaVersion', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.SchemaVersion (
