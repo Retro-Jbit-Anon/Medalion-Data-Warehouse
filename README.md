@@ -2,8 +2,7 @@
 [![SQL Server](https://img.shields.io/badge/SQL_Server-2022-brightgreen.svg )](https://www.microsoft.com/sql-server )
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg )](#docker-setup)
 
-# SqlDataWarehouse
-# 🏗️ Data Warehouse Project: Bronze → Silver → Gold
+# 🏗️ Medalion-Data-Warehouse
 
 This is a complete end-to-end **SQL-based data warehouse** built using **Microsoft SQL Server Express**, designed for learning, development, and reporting purposes.
 
@@ -109,3 +108,23 @@ Power BI Desktop
 Tableau
 Excel (via ODBC connection)
 
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you'd like to enhance this dashboard with new features, improve the UI, or add real-world datasets, feel free to fork this repo and submit a pull request.
+
+---
+
+## 📄 License
+
+This project is licensed under the [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg )](LICENSE).
+
+---
+
+## 📞 Contact
+
+If you have any questions, feedback, or suggestions, feel free to reach out:
+
+- 💼 GitHub Profile: [GitHub Link]( https://github.com/Retro-Jbit-Anon )
+- 📧 Email: [Retro-Jbit-Anon](mailto:jidaarabbas@gmail.com)
