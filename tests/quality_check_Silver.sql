@@ -4,7 +4,7 @@
 -- Date: July 11, 2025
 -- Purpose: Perform data quality checks on Silver layer tables
 -- Notes:
---   - Run after silver.load_silver completes successfully
+--   - Run after Silver.load_Silver completes successfully
 --   - Investigate any returned rows to ensure data integrity
 -- =============================================
 
@@ -13,7 +13,7 @@ PRINT '🔍 Starting Data Quality Checks (Silver Layer)';
 PRINT '================================================';
 
 -- ====================================================================
--- 🧾 Checking 'silver.crm_cust_info'
+-- 🧾 Checking 'Silver.crm_cust_info'
 -- ====================================================================
 
 -- 🔍 Check for NULLs or Duplicates in cst_id
@@ -22,7 +22,7 @@ PRINT '🟡 [crm_cust_info] Checking for NULL or duplicate cst_id...';
 SELECT 
     cst_id,
     COUNT(*) AS DuplicateCount
-FROM silver.crm_cust_info
+FROM Silver.crm_cust_info
 GROUP BY cst_id
 HAVING COUNT(*) > 1 OR cst_id IS NULL;
 
@@ -31,23 +31,23 @@ HAVING COUNT(*) > 1 OR cst_id IS NULL;
 PRINT '🟡 [crm_cust_info] Checking for unwanted spaces in cst_key...';
 SELECT 
     cst_key 
-FROM silver.crm_cust_info
+FROM Silver.crm_cust_info
 WHERE cst_key != TRIM(cst_key);
 
 -- 📊 Show distinct marital status values
 PRINT '🟢 [crm_cust_info] Distinct marital status values:';
 SELECT DISTINCT 
     cst_marital_status 
-FROM silver.crm_cust_info;
+FROM Silver.crm_cust_info;
 
 -- 📊 Show gender normalization
 PRINT '🟢 [crm_cust_info] Distinct gender values:';
 SELECT DISTINCT 
     cst_gndr 
-FROM silver.crm_cust_info;
+FROM Silver.crm_cust_info;
 
 -- ====================================================================
--- 🧾 Checking 'silver.crm_prd_info'
+-- 🧾 Checking 'Silver.crm_prd_info'
 -- ====================================================================
 
 -- 🔍 Check for NULLs or Duplicates in prd_id
@@ -56,7 +56,7 @@ PRINT '🟡 [crm_prd_info] Checking for NULL or duplicate prd_id...';
 SELECT 
     prd_id,
     COUNT(*) AS DuplicateCount
-FROM silver.crm_prd_info
+FROM Silver.crm_prd_info
 GROUP BY prd_id
 HAVING COUNT(*) > 1 OR prd_id IS NULL;
 
@@ -65,7 +65,7 @@ HAVING COUNT(*) > 1 OR prd_id IS NULL;
 PRINT '🟡 [crm_prd_info] Checking for unwanted spaces in prd_nm...';
 SELECT 
     prd_nm 
-FROM silver.crm_prd_info
+FROM Silver.crm_prd_info
 WHERE prd_nm != TRIM(prd_nm);
 
 -- 🔍 Check for negative or NULL product cost
@@ -73,25 +73,25 @@ WHERE prd_nm != TRIM(prd_nm);
 PRINT '🟡 [crm_prd_info] Checking for invalid product cost...';
 SELECT 
     prd_cost 
-FROM silver.crm_prd_info
+FROM Silver.crm_prd_info
 WHERE prd_cost < 0 OR prd_cost IS NULL;
 
 -- 📊 Show distinct product lines
 PRINT '🟢 [crm_prd_info] Distinct product line values:';
 SELECT DISTINCT 
     prd_line 
-FROM silver.crm_prd_info;
+FROM Silver.crm_prd_info;
 
 -- 🔍 Check for invalid date ranges
 -- Expected: No results
 PRINT '🟡 [crm_prd_info] Checking for end date before start date...';
 SELECT 
     * 
-FROM silver.crm_prd_info
+FROM Silver.crm_prd_info
 WHERE prd_end_dt < prd_start_dt;
 
 -- ====================================================================
--- 🧾 Checking 'silver.crm_sales_details'
+-- 🧾 Checking 'Silver.crm_sales_details'
 -- ====================================================================
 
 -- 🔍 Check for invalid order dates
@@ -102,7 +102,7 @@ SELECT
     sls_order_dt,
     sls_ship_dt,
     sls_due_dt 
-FROM silver.crm_sales_details
+FROM Silver.crm_sales_details
 WHERE sls_order_dt > sls_ship_dt 
    OR sls_order_dt > sls_due_dt;
 
@@ -113,7 +113,7 @@ SELECT DISTINCT
     sls_sales,
     sls_quantity,
     sls_price 
-FROM silver.crm_sales_details
+FROM Silver.crm_sales_details
 WHERE sls_sales != sls_quantity * sls_price
    OR sls_sales IS NULL 
    OR sls_quantity IS NULL 
@@ -124,7 +124,7 @@ WHERE sls_sales != sls_quantity * sls_price
 ORDER BY sls_sales, sls_quantity, sls_price;
 
 -- ====================================================================
--- 🧾 Checking 'silver.erp_cust_az12'
+-- 🧾 Checking 'Silver.erp_cust_az12'
 -- ====================================================================
 
 -- 🔍 Identify out-of-range birthdates
@@ -132,7 +132,7 @@ ORDER BY sls_sales, sls_quantity, sls_price;
 PRINT '🟡 [erp_cust_az12] Checking for invalid birthdates...';
 SELECT DISTINCT 
     bdate 
-FROM silver.erp_cust_az12
+FROM Silver.erp_cust_az12
 WHERE bdate < '1924-01-01' 
    OR bdate > GETDATE();
 
@@ -140,21 +140,21 @@ WHERE bdate < '1924-01-01'
 PRINT '🟢 [erp_cust_az12] Distinct gender values:';
 SELECT DISTINCT 
     gen 
-FROM silver.erp_cust_az12;
+FROM Silver.erp_cust_az12;
 
 -- ====================================================================
--- 🧾 Checking 'silver.erp_loc_a101'
+-- 🧾 Checking 'Silver.erp_loc_a101'
 -- ====================================================================
 
 -- 📊 Show country mapping values
 PRINT '🟢 [erp_loc_a101] Distinct country names:';
 SELECT DISTINCT 
     cntry 
-FROM silver.erp_loc_a101
+FROM Silver.erp_loc_a101
 ORDER BY cntry;
 
 -- ====================================================================
--- 🧾 Checking 'silver.erp_px_cat_g1v2'
+-- 🧾 Checking 'Silver.erp_px_cat_g1v2'
 -- ====================================================================
 
 -- 🔍 Check for unwanted spaces in string fields
@@ -164,7 +164,7 @@ SELECT
     cat,
     subcat,
     maintenance
-FROM silver.erp_px_cat_g1v2
+FROM Silver.erp_px_cat_g1v2
 WHERE cat != TRIM(cat) 
    OR subcat != TRIM(subcat) 
    OR maintenance != TRIM(maintenance);
@@ -173,7 +173,7 @@ WHERE cat != TRIM(cat)
 PRINT '🟢 [erp_px_cat_g1v2] Distinct maintenance flags:';
 SELECT DISTINCT 
     maintenance 
-FROM silver.erp_px_cat_g1v2;
+FROM Silver.erp_px_cat_g1v2;
 
 -- Track execution in SchemaVersion table
 IF OBJECT_ID('dbo.SchemaVersion', 'U') IS NOT NULL
