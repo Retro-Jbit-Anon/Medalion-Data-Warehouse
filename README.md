@@ -1,8 +1,6 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg )](LICENSE)
 [![SQL Server](https://img.shields.io/badge/SQL_Server-2022-brightgreen.svg )](https://www.microsoft.com/sql-server )
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg )](#docker-setup)
-[![GitHub Issues](https://img.shields.io/github/issues/Retro-Jbit-Anon/SqlDataWarehous )](https://github.com//Retro-Jbit-Anon/SqlDataWarehous )
-[![Last Commit](https://img.shields.io/github/last-commit/Retro-Jbit-Anon/SqlDataWarehous )](https://github.com//Retro-Jbit-Anon/SqlDataWarehous )
 
 # SqlDataWarehouse
 # 🏗️ Data Warehouse Project: Bronze → Silver → Gold
