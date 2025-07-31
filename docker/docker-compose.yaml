@@ -12,7 +12,8 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - ./scripts:/docker-entrypoint-initdb.d
+      - ../scripts:/docker-entrypoint-initdb.d
+      - ../datasets:/datasets
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "SA", "-P", "${MSSQL_SA_PASSWORD}", "-Q", "SELECT 1"]
