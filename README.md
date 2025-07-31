@@ -1,130 +1,153 @@
-[![License](https://img.shields.io/badge/License-MIT-blue.svg )](LICENSE)
-[![SQL Server](https://img.shields.io/badge/SQL_Server-2022-brightgreen.svg )](https://www.microsoft.com/sql-server )
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg )](#docker-setup)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![SQL Server](https://img.shields.io/badge/SQL_Server-2022-brightgreen.svg)](https://www.microsoft.com/sql-server)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](#-run-it-locally-with-docker)
 
-# 🏗️ Medalion-Data-Warehouse
+# 🏗️ Medallion-Data-Warehouse
 
-This is a complete end-to-end **SQL-based data warehouse** built using **Microsoft SQL Server Express**, designed for learning, development, and reporting purposes.
+This is a complete, end-to-end **SQL-based data warehouse** built using **Microsoft SQL Server** and Docker. It demonstrates a classic medallion architecture (Bronze, Silver, Gold) for transforming raw data into business-ready insights.
 
-It follows a layered architecture:
-- **Bronze**: Raw data ingestion
-- **Silver**: Cleansed, standardized, integrated data
-- **Gold**: Business-ready dimensional model (Star Schema)
-
-All scripts are version-controlled, documented, and Docker-ready for easy deployment.
+All scripts are version-controlled, documented, and containerized for easy and repeatable deployment.
 
 ---
 
 ## 🧱 Architecture Overview
 
-### 🔷 Bronze Layer
-- Purpose: Ingest raw data from source systems
-- Tables: CRM & ERP flat files loaded using `BULK INSERT`
-- Schema: `Bronze`
+The data warehouse follows a layered approach to ensure data quality, traceability, and scalability.
 
-### ⚙️ Silver Layer
-- Purpose: Clean, standardize, integrate data
-- Transformations:
-  - Trim spaces
-  - Normalize values (gender, marital status)
-  - Handle nulls and duplicates
-  - Derive missing fields
-- Schema: `Silver`
+### 🔷 Bronze Layer (Schema: `Bronze`)
+- **Purpose**: Ingests raw, unaltered data from various source systems (CRM, ERP).
+- **Process**: Data is loaded from CSV files using `BULK INSERT`. Tables in this layer are truncated and reloaded on each run.
 
-### 💠 Gold Layer
-- Purpose: Build dimensional model for reporting
-- Includes:
-  - Dimensions: `dim_customers`, `dim_products`
-  - Fact Table: `fact_sales`
-- Schema: `Gold`
+### ⚙️ Silver Layer (Schema: `Silver`)
+- **Purpose**: Cleanses, standardizes, and integrates data from the Bronze layer.
+- **Transformations**:
+  - Deduplication of records.
+  - Standardization of values (e.g., 'M' -> 'Male').
+  - Data type correction (e.g., string dates to `DATE`).
+  - Business rule enforcement.
+
+### 💠 Gold Layer (Schema: `Gold`)
+- **Purpose**: Provides a business-ready, dimensional model (Star Schema) for reporting and analytics.
+- **Structure**:
+  - **Dimensions**: `dim_customers`, `dim_products`
+  - **Fact Table**: `fact_sales`
+- **Implementation**: These are implemented as views on top of the Silver layer, ensuring they always reflect the latest data without physical duplication.
 
 ---
 
-## 🛠️ Tools Used
+## 📂 Project Structure
 
-- Microsoft SQL Server Express
-- SSMS (SQL Server Management Studio)
-- Git / GitHub for version control
-- Docker for local automation
+The repository is organized to separate concerns and make navigation intuitive.
+
+```
+.
+├── datasets/         # Source CSV files (CRM and ERP)
+├── docker/           # Docker configuration
+│   └── docker-compose.yaml
+├── scripts/          # All SQL scripts, organized by layer
+│   ├── Bronze/
+│   ├── Silver/
+│   ├── Gold/
+│   └── init_database.sql
+├── tests/            # Data quality check scripts
+└── README.md
+```
 
 ---
 
 ## 🐳 Run It Locally With Docker
 
-This project includes a `docker-compose.yaml` file that lets you spin up a SQL Server instance and automatically deploy your entire data warehouse — no manual setup required!
+This project is fully containerized. The `docker-compose.yaml` file automates the entire setup process.
 
 ### ✅ Prerequisites
 
-Make sure you have these installed:
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/ )
-- Git (optional, for cloning)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+- Git (for cloning the repository).
+
+### ⚙️ Setup Instructions
+
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/yourusername/DataWareHouseProject.git
+    cd DataWareHouseProject
+    ```
+
+2.  **Set the Database Password**
+    Create a file named `.env` in the project root directory. This file is git-ignored and will store your database password securely. Add the following line to it:
+    ```
+    MSSQL_SA_PASSWORD=YourStrong@Password123
+    ```
+    *Note: Replace `YourStrong@Password123` with a strong password of your choice.*
+
+3.  **Build and Run the Container**
+    From the **root of the project directory**, run the following command:
+    ```bash
+    docker-compose -f docker/docker-compose.yaml up --build
+    ```
+    This command will:
+    - Pull the SQL Server 2022 image.
+    - Start the container.
+    - Automatically run all the initialization scripts located in the `scripts/` directory to create the database, schemas, and tables.
 
 ---
 
-### Clone the repo
-```bash
-git clone https://github.com/yourusername/DataWareHouseProject.git 
-cd DataWareHouseProject
-```
+## 🔄 Running the ETL Process
 
-### 🔧 How to Run
+After the container is up and running, the database structure will be in place, but the tables will be empty. To populate the data warehouse, you need to execute the loading procedures in the correct order.
 
-From the root of your project:
+You can do this using a SQL client like SSMS, Azure Data Studio, or DBeaver.
 
-```bash
-# Step 1: Go to docker folder
-cd docker
+1.  **Connect to the Database**
+    | Parameter      | Value                     |
+    |----------------|---------------------------|
+    | **Server**     | `localhost`               |
+    | **Port**       | `1433`                    |
+    | **Login**      | `sa`                      |
+    | **Password**   | The one you set in `.env` |
+    | **Database**   | `DataWareHouse`           |
 
-# Step 2: Start the SQL Server container and deploy DWH
-docker-compose up
-```
+2.  **Execute Loading Procedures**
+    Run the following SQL commands in order:
+    ```sql
+    -- 1. Load raw data into the Bronze layer
+    EXEC Bronze.load_Bronze;
+
+    -- 2. Transform and load data into the Silver layer
+    EXEC Silver.load_Silver;
+    ```
+    The Gold layer consists of views, so it updates automatically as the Silver layer is populated.
+
 ---
 
-## 🔒 Set SA Password
+## ✅ Data Quality Checks
 
-Create a .env file at the root to securely store your SQL Server password:
-```
-MSSQL_SA_PASSWORD=MyP@ssw0rd
-```
----
-## 💻 Connect via SSMS or Power BI
+The project includes scripts to validate the data in the Silver and Gold layers. You can run these from your SQL client at any time after the ETL process to check for integrity issues.
 
-Once the container is running, connect using:
-| Tool | Connection Info |
-|------|-----------------|
-| SSMS | Server: localhost<br>Login: sa<br>Password: From `.env` |
-| Power BI / Excel | Server: localhost<br>Database: DataWareHouse<br>Authentication: SQL Server<br>User: sa<br>Password: From `.env` |
+-   **To check the Silver layer:**
+    Execute the contents of `tests/quality_check_Silver.sql`.
+-   **To check the Gold layer:**
+    Execute the contents of `tests/quality_check_Gold.sql`.
+
+These scripts will print messages and return rows for any data that fails the quality checks (e.g., duplicates, broken referential integrity).
+
 ---
 
 ## 📊 Ready for Reporting
-These views in the Gold schema are ready for visualization:
 
-gold.dim_customers
-gold.dim_products
-gold.fact_sales
-Use any of the following tools:
+The Gold layer views are designed for consumption by BI tools. Connect your favorite tool (Power BI, Tableau, Excel) to the database using the connection details above to start building reports and dashboards.
 
-Power BI Desktop
-Tableau
-Excel (via ODBC connection)
+-   `gold.dim_customers`
+-   `gold.dim_products`
+-   `gold.fact_sales`
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you'd like to enhance this dashboard with new features, improve the UI, or add real-world datasets, feel free to fork this repo and submit a pull request.
+Contributions are welcome! Feel free to fork this repo, add features, and submit a pull request.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg )](LICENSE).
-
----
-
-## 📞 Contact
-
-If you have any questions, feedback, or suggestions, feel free to reach out:
-
-- 💼 GitHub Profile: [GitHub Link]( https://github.com/Retro-Jbit-Anon )
-- 📧 Email: [Retro-Jbit-Anon](mailto:jidaarabbas@gmail.com)
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
